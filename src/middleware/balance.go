@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	// Store round robin counters for each service
+	// Store round-robin counters for each service
 	roundRobinCounters = make(map[string]int)
 	mu                 sync.Mutex
 )

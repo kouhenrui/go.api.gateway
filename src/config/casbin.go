@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/casbin/casbin/v2"
-	"github.com/casbin/gorm-adapter/v3"
+	"github.com/casbin/gorm-adapter/v2"
 )
 
 type CasbinEnforcer struct {
@@ -11,11 +11,6 @@ type CasbinEnforcer struct {
 
 // NewCasbinEnforcer 初始化 Casbin 并连接 MySQL 数据库
 func NewCasbinEnforcer(dsn string) (*CasbinEnforcer, error) {
-	// 创建 MySQL 数据库连接
-	//db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	//if err != nil {
-	//	return nil, err
-	//}
 	Type := "mysql"
 	db := "" //CabinConfig.UserName + ":" + CabinConfig.PassWord + "@tcp(" + CabinConfig.HOST + ":" + CabinConfig.Port + ")/"
 	// 初始化 Gorm Adapter

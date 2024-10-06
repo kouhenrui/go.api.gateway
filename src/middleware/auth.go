@@ -2,9 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 	"net/http"
-	"strings"
 )
 
 var validAPIKey = "your-api-key-secret"
@@ -19,16 +17,16 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
-		token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-			return []byte("your_jwt_secret"), nil
-		})
+		//tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+		//token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		//	return []byte("your_jwt_secret"), nil
+		//})
 
-		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		}
+		//if err != nil || !token.Valid {
+		//	c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		//	c.Abort()
+		//	return
+		//}
 
 		c.Next()
 	}

@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.api.gateway/src/config/response"
+	"go.api.gateway/src/middleware"
 	"net/http"
 )
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
-	//r.Use(middleware.CORSMiddleware()) //处理跨域请求
+	r.Use(middleware.CORSMiddleware()) //处理跨域请求
 	//r.Use(middleware.LoggerMiddleware())      //处理日志记录
 	//r.Use(middleware.MethodNotAllowedHandler) //处理405请求
 	//r.Use(middleware.NotFoundHandler)         //处理404请求
