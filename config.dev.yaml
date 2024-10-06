@@ -1,0 +1,14 @@
+auth:
+  secret_key: "your_jwt_secret"
+
+rate_limiter:
+  redis_host: "localhost:6379"
+  max_requests: 100
+  window_duration: 60
+
+services:
+  user_service:
+    endpoints:
+      - http://localhost:8081
+      - http://localhost:8082
+    load_balancer: "round_robin"
