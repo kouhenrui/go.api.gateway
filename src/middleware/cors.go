@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.api.gateway/src/config/response"
 	"net/http"
@@ -25,7 +26,7 @@ func CORSMiddleware() gin.HandlerFunc {
 			c.AbortWithStatus(204)
 			return
 		}
-
+		fmt.Println("跨域请求处理中间件")
 		c.Next()
 	}
 }

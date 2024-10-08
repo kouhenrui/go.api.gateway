@@ -1,3 +1,6 @@
+server:
+  port: ":3000"
+
 auth:
   secret_key: "your_jwt_secret"
 

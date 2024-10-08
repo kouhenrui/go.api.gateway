@@ -26,6 +26,7 @@ func ErrorHandler() gin.HandlerFunc {
 				c.Abort()
 			}
 		}()
+		fmt.Println("全局错误捕捉处理中间件")
 		c.Next() // 执行下一个中间件
 
 		// 检查是否有错误
@@ -41,7 +42,7 @@ func ErrorHandler() gin.HandlerFunc {
 		if len(c.Errors) > 0 {
 			err := c.Errors.Last()
 			log.Printf("业务错误: %v\n", err.Err)
-			response.Error(http.StatusInternalServerError, err.Error())
+			c.JSON(http.StatusInternalServerError, response.Error(http.StatusInternalServerError, err.Error()))
 		}
 	}
 }

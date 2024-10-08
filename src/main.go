@@ -1,15 +1,18 @@
 package main
 
 import (
+	"fmt"
+	"go.api.gateway/src/config"
 	"go.api.gateway/src/router"
 	"log"
 )
 
 func main() {
-	//config.InitConfig()
+	config.InitConfig()
 	r := router.SetupRouter()
-
-	if err := r.Run(":8080"); err != nil {
+	fmt.Println(config.Port, "/////////////////")
+	//config.Port
+	if err := r.Run(config.Port); err != nil {
 		log.Fatalf("Could not start server: %v", err)
 	}
 

@@ -1,55 +1,51 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 	"log"
 	"os"
-	"strings"
 )
 
 var (
 	v   *viper.Viper
 	err error
 )
+var (
+	Port string
+)
 
 // InitConfig 初始化viper配置文件
 func InitConfig() {
 	v = viper.New() // 构建 Viper 实例
-	//configPath := ""
-	// 设置配置文件名（不带扩展名）
-	v.SetConfigName("config.dev")
 
-	// 设置配置文件类型
-	v.SetConfigType("yaml")
-	v.AddConfigPath("../../")
-	// 如果传入了配置路径，则设置搜索路径
-	//if configPath != "" {
-	//	v.AddConfigPath(configPath)
-	//} else {
-	//	// 默认在当前目录下找配置
-	//	v.AddConfigPath(".")
-	//}
-
-	// 读取环境变量
-	v.SetEnvPrefix("myapp") // 设置环境变量前缀
-	v.AutomaticEnv()        // 自动从环境变量读取
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
+	v.SetConfigType("yaml")   // 设置配置文件类型
+	v.SetConfigName("config") // 配置文件名称(无扩展名)
+	//v.SetConfigFile("./config.yaml")
+	fmt.Println("-----------------")
+	// 设置配置文件所在路径
+	//v.AddConfigPath("./..") //./..
+	// 添加配置文件的搜索路径
+	v.AddConfigPath("../")   // 搜索父目录 (相对于 conf.go 文件的位置)
+	v.AddConfigPath("./src") // 搜索 src 目录
+	v.AddConfigPath(".")     // 如果程序的工作目录就是 go.apo.gateway
 	// 读取配置文件
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+	if err = v.ReadInConfig(); err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			fmt.Println(err, "文件未找到", err.Error())
 			// 配置文件未找到
 			panic(fmt.Errorf("配置文件未找到: %w", err))
 			//return nil, fmt.Errorf("配置文件未找到: %w", err)
 		} else {
-			// 其他读取配置错误
+			fmt.Println(err, "读取配置文件错误")
 			panic(fmt.Errorf("读取配置文件错误: %w", err))
 			//return nil, fmt.Errorf("读取配置文件错误: %w", err)
 		}
 	}
-
+	//fmt.Printf("Using config file: %s\n", v.ConfigFileUsed())
 	// 设置默认值（如果配置文件中没有，使用这些默认值）
 	//viper.SetDefault("server.port", 8080)
 
@@ -70,6 +66,9 @@ func InitConfig() {
 		fmt.Println("Config file updated.")
 		viperLoadConf() // 加载配置的方法
 	})
+	//fmt.Println("打印读取值", Port)
+	//v.SetDefault(Port, ":3000")
+	//fmt.Println(Port, "设置默认值")
 	fmt.Println("配置初始化成功")
 	//return Conf, nil
 }
@@ -87,4 +86,6 @@ func initLogging(logFile string) {
 }
 
 // 加载配置信息
-func viperLoadConf() {}
+func viperLoadConf() {
+	Port = v.GetString("server.port")
+}
