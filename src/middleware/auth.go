@@ -2,17 +2,17 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"go.api.gateway/src/config"
+	"go.api.gateway/src/config/response"
 	"net/http"
 )
-
-var validAPIKey = "your-api-key-secret"
 
 // AuthJWTMiddleware  verifies the JWT token
 func AuthJWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+			c.JSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "Authorization header required")) // gin.H{"error": "Authorization header required"})
 			c.Abort()
 			return
 		}
@@ -37,7 +37,7 @@ func AuthCOOKIEMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie("session_id")
 		if err != nil || cookie == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "未登录"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "未登录")) //gin.H{"message": "未登录"})
 			return
 		}
 
@@ -53,10 +53,11 @@ func AuthCOOKIEMiddleware() gin.HandlerFunc {
 func APIKeyAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		apiKey := c.GetHeader("X-API-KEY")
-		if apiKey == "" || apiKey != validAPIKey {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "API key is missing or invalid",
-			})
+		if apiKey == "" || apiKey != config.ViperConfig.Service.ApiKey {
+			c.JSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "API key is missing or invalid"))
+			//gin.H{
+			//	"message": "API key is missing or invalid",
+			//})
 			c.Abort()
 			return
 		}

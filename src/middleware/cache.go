@@ -3,17 +3,11 @@ package middleware
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
 	"net/http"
 )
-
-// 缓存模块
-func init() {
-	redisClient = redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-	})
-}
 
 // CacheMiddleware caches the GET requests using Redis
 func CacheMiddleware() gin.HandlerFunc {
@@ -25,8 +19,8 @@ func CacheMiddleware() gin.HandlerFunc {
 
 		cacheKey := generateCacheKey(c.Request)
 
-		cachedResponse, err := redisClient.Get(ctx, cacheKey).Result()
-		if err == redis.Nil {
+		cachedResponse, err := redisClient.Get(cacheKey)
+		if errors.Is(err, redis.Nil) {
 			// Cache miss, continue to the handler and cache the response
 			c.Next()
 

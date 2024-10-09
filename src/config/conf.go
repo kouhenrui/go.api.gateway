@@ -21,6 +21,8 @@ type Config struct {
 type ServiceConf struct {
 	Port      string `json:"port" yaml:"port" mapstructure:"port"`                   // 服务端口号
 	SecretKey string `json:"secret_key" yaml:"secret_key" mapstructure:"secret_key"` // 服务秘钥
+	ApiKey    string `json:"api_key" yaml:"api_key" mapstructure:"api_key"`          //api密钥验证
+	CSRFKey   string `json:"csrf_key" yaml:"csrf_key" mapstructure:"csrf_key"`       //csrf请求密钥
 }
 
 // MysqlConf 定义 MySQL 数据库配置
@@ -102,6 +104,7 @@ type LogConf struct {
 // Captcha 定义验证码相关配置
 type Captcha struct {
 	Prefix  string        `json:"prefix,omitempty" yaml:"prefix" mapstructure:"prefix"`
+	Limit   int           `json:"limit" yaml:"limit" mapstructure:"limit"`
 	Expired time.Duration `json:"expired,omitempty" yaml:"expired" mapstructure:"expired"`
 }
 
