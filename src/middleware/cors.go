@@ -8,10 +8,10 @@ import (
 )
 
 func MethodNotAllowedHandler(c *gin.Context) {
-	c.JSON(http.StatusNotFound, response.Error(http.StatusNotFound, "方法不允许"))
+	c.JSON(http.StatusMethodNotAllowed, response.Error(http.StatusMethodNotAllowed, "方法不允许"))
 }
 func NotFoundHandler(c *gin.Context) {
-	c.JSON(http.StatusMethodNotAllowed, response.Error(http.StatusNotFound, "资源不存在"))
+	c.JSON(http.StatusNotFound, response.Error(http.StatusNotFound, "资源不存在"))
 }
 
 // CORSMiddleware 跨域中间件

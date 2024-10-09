@@ -12,10 +12,12 @@ func SetupRouter() *gin.Engine {
 	r := gin.New()
 	r.HandleMethodNotAllowed = true
 	r.MaxMultipartMemory = 20 << 20
-	r.Use(middleware.CORSMiddleware())        //处理跨域请求
-	r.Use(middleware.LoggerMiddleware())      //处理日志记录
-	r.Use(middleware.MethodNotAllowedHandler) //处理405请求
-	r.Use(middleware.NotFoundHandler)         //处理404请求
+	r.Use(middleware.CORSMiddleware())             //处理跨域请求
+	r.Use(middleware.LoggerMiddleware())           //处理日志记录
+	r.NoMethod(middleware.MethodNotAllowedHandler) //处理405请求
+	r.NoRoute(middleware.NotFoundHandler)          //处理404请求
+	r.Use(middleware.ErrorHandler())               //处理全局异常捕捉
+
 	// Middleware for JWT authentication
 	//r.Use(middleware.AuthJWTMiddleware()) //处理token请求头鉴定
 
@@ -25,8 +27,6 @@ func SetupRouter() *gin.Engine {
 	//r.Use(middleware.RateLimiterMiddleware()) //处理限流请求
 
 	//r.Use(middleware.CacheMiddleware()) //处理缓存请求
-
-	r.Use(middleware.ErrorHandler()) //处理全局异常捕捉
 
 	// Route for user service
 	//r.Any("/user/*proxyPath", func(c *gin.Context) {
