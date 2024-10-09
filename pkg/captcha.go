@@ -13,16 +13,16 @@ type Captcha struct {
 
 func NewCaptcha() *Captcha {
 	driver := GGCaptcha.NewDriverString()
-	////localStore := GGCaptcha.NewLocalStore()
-	redisOption := GGCaptcha.RedisOptions{
-		Host:     "192.168.245.22",
-		Port:     "6379",
-		Db:       4,
-		PoolSize: 10,
-		MaxRetry: 5,
-	}
-	redisStore := GGCaptcha.NewRediStore(redisOption)
-	ggcaptcha := GGCaptcha.NewGGCaptcha(driver, redisStore, time.Minute, 10*time.Minute, 50)
+	localStore := GGCaptcha.NewLocalStore()
+	//redisOption := GGCaptcha.RedisOptions{
+	//	Host:     "192.168.245.22",
+	//	Port:     "6379",
+	//	Db:       4,
+	//	PoolSize: 10,
+	//	MaxRetry: 5,
+	//}
+	//redisStore := GGCaptcha.NewRediStore(redisOption)
+	ggcaptcha := GGCaptcha.NewGGCaptcha(driver, localStore, time.Minute, 10*time.Minute, 50)
 	return &Captcha{
 		captcha: ggcaptcha,
 		//driver: driver,

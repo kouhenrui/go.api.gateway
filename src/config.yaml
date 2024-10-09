@@ -1,8 +1,13 @@
 service:
-  port: ":3000"               # 服务运行的端口号
+  port: ":3000"                 # 服务运行的端口号
   secret_key: "your_secret_key" #auth密钥
-  api_key:  "your api key" #api 密钥
-  csrf_key: "your csrf key"#csrf请求保护密钥
+  api_key:  "your api key"      #api 密钥
+  csrf_key: "your csrf key"     #csrf请求保护密钥
+  white_url:
+    - /api/v1/captcha
+    - /api/register
+    - /api/login
+
 mysql:
   username: "root"           # MySQL用户名
   password: "123456"  # MySQL密码

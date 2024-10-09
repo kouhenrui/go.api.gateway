@@ -31,7 +31,7 @@ func LoggerMiddleware() gin.HandlerFunc {
 				"path":     c.Request.URL.Path,
 				"duration": duration,
 				"clientIP": c.ClientIP(),
-			}).Info("Request completed successfully")
+			}).Info("Request  success")
 		case 404:
 			config.Logger.WithFields(logrus.Fields{
 				"status":   statusCode,

@@ -10,6 +10,10 @@ import (
 // AuthJWTMiddleware  verifies the JWT token
 func AuthJWTMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		url := c.Request.URL.Path
+		if !config.FuzzyMatch(url) {
+			c.Next()
+		}
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "Authorization header required")) // gin.H{"error": "Authorization header required"})
@@ -35,6 +39,10 @@ func AuthJWTMiddleware() gin.HandlerFunc {
 // AuthCOOKIEMiddleware 验证 Cookie 是否存在并有效
 func AuthCOOKIEMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		url := c.Request.URL.Path
+		if !config.FuzzyMatch(url) {
+			c.Next()
+		}
 		cookie, err := c.Cookie("session_id")
 		if err != nil || cookie == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "未登录")) //gin.H{"message": "未登录"})
@@ -52,6 +60,10 @@ func AuthCOOKIEMiddleware() gin.HandlerFunc {
 // APIKeyAuthMiddleware API 密钥验证中间件
 func APIKeyAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		url := c.Request.URL.Path
+		if !config.FuzzyMatch(url) {
+			c.Next()
+		}
 		apiKey := c.GetHeader("X-API-KEY")
 		if apiKey == "" || apiKey != config.ViperConfig.Service.ApiKey {
 			c.JSON(http.StatusUnauthorized, response.Error(http.StatusUnauthorized, "API key is missing or invalid"))

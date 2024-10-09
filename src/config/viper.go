@@ -78,6 +78,6 @@ func viperLoadConf() {
 	if err = v.Unmarshal(&ViperConfig); err != nil {
 		log.Fatalf("Unable to decode into config struct: %v", err)
 	}
-	log.Println(ViperConfig.Log, "+++++++++++++")
+	log.Println(ViperConfig.Service.WhiteUrl, "+++++++++++++")
 	InitLogger(&ViperConfig.Log)
 }

@@ -17,7 +17,7 @@ var (
 // 负载均衡模块
 
 // ProxyRequest handles the request routing and load balancing
-func ProxyRequest(c *gin.Context, serviceName string) {
+func ProxyRequest(c *gin.Context) {
 	services := []string{
 		"http://localhost:8081",
 		"http://localhost:8082",
