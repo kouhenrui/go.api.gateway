@@ -18,7 +18,7 @@ var Logger = logrus.New()
 //}
 
 // InitLogger initializes the logger with rotation and custom log formats
-func InitLogger(logConf *LogConf) {
+func InitLogger(logConf LogConf) {
 	//确定文件是否存在
 	if _, err := os.Stat(logConf.LogPath); os.IsNotExist(err) {
 		if err := os.MkdirAll(logConf.LogPath, 0755); err != nil {

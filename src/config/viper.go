@@ -13,16 +13,9 @@ var (
 	err         error
 	ViperConfig Config
 )
-var isConfigInitialized bool
 
 // InitConfig 初始化viper配置文件
 func InitConfig() {
-
-	//if isConfigInitialized {
-	//	log.Println("配置已经初始化，跳过重复执行")
-	//	return
-	//}
-
 	v = viper.New()           // 构建 Viper 实例
 	v.SetConfigType("yaml")   // 设置配置文件类型
 	v.SetConfigName("config") // 配置文件名称(无扩展名)
@@ -51,27 +44,8 @@ func InitConfig() {
 		fmt.Println("Config file updated.")
 		viperLoadConf() // 加载配置的方法
 	})
-
-	// 日志初始化
-	//logFile := v.GetString("log_file")
-	//if logFile != "" {
-	//	initLogging(logFile)
-	//}
-	//isConfigInitialized = true
 	fmt.Println("配置初始化成功")
 }
-
-// 初始化日志记录
-//func initLogging(logFile string) {
-//	// 打开日志文件
-//	file, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-//	if err != nil {
-//		fmt.Printf("无法打开日志文件: %v", err)
-//	}
-//	// 设置日志输出到文件
-//	log.SetOutput(file)
-//	log.Println("日志已启动")
-//}
 
 // 加载配置信息
 func viperLoadConf() {
@@ -79,5 +53,5 @@ func viperLoadConf() {
 		log.Fatalf("Unable to decode into config struct: %v", err)
 	}
 	log.Println(ViperConfig.Service.WhiteUrl, "+++++++++++++")
-	InitLogger(&ViperConfig.Log)
+	InitLogger(ViperConfig.Log) // 初始化日志记录
 }
