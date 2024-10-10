@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 	"reflect"
 	"regexp"
 )
@@ -53,4 +54,11 @@ func FuzzyMatch(param string) bool {
 
 	}
 	return false
+}
+
+// Paginate 分页组件
+func Paginate(db *gorm.DB, page, pageSize int) *gorm.DB {
+	offset := (page - 1) * page
+
+	return db.Offset(offset).Limit(pageSize)
 }
