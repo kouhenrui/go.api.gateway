@@ -54,4 +54,9 @@ func viperLoadConf() {
 	}
 	log.Println(ViperConfig.Service.WhiteUrl, "+++++++++++++")
 	InitLogger(ViperConfig.Log) // 初始化日志记录
+	err = NewCasbinEnforcer(ViperConfig.Casbin)
+	if err != nil {
+		log.Println("casbin初始化错误", err)
+	}
+
 }

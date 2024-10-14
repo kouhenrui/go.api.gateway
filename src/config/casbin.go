@@ -3,6 +3,8 @@ package config
 import (
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/gorm-adapter/v2"
+	_ "github.com/go-sql-driver/mysql" // MySQL 驱动
+	"strings"
 )
 
 type CasbinEnforcer struct {
@@ -10,27 +12,57 @@ type CasbinEnforcer struct {
 }
 
 // NewCasbinEnforcer 初始化 Casbin 并连接 MySQL 数据库
-func NewCasbinEnforcer(dsn string) (*CasbinEnforcer, error) {
-	Type := "mysql"
-	db := "" //CabinConfig.UserName + ":" + CabinConfig.PassWord + "@tcp(" + CabinConfig.HOST + ":" + CabinConfig.Port + ")/"
+func NewCasbinEnforcer(CasbinConfig CasbinConf) error {
+	//Type := "mysql"
+	db := CasbinConfig.UserName + ":" + CasbinConfig.PassWord + "@tcp(" + CasbinConfig.Host + ":" + CasbinConfig.Port + ")/"
 	// 初始化 Gorm Adapter
-	adapter, err := gormadapter.NewAdapter(Type, db, true)
+	adapter, err := gormadapter.NewAdapter(CasbinConfig.Type, db, false)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// 初始化 Casbin enforcer
-	e, err := casbin.NewEnforcer("auth/model.conf", adapter)
+	e, err := casbin.NewEnforcer("./src/model.conf", adapter)
 	if err != nil {
-		return nil, err
+		return err
 	}
-
+	//挂载基础策略
+	initCasbin(e)
 	// 加载策略
 	if err = e.LoadPolicy(); err != nil {
-		return nil, err
+		return err
 	}
+	_ = &CasbinEnforcer{enforcer: e}
+	return nil
+}
 
-	return &CasbinEnforcer{enforcer: e}, nil
+func initCasbin(e *casbin.Enforcer) {
+
+	lp := []string{
+		"p, *, /api/v1/login, *",
+		"p, *, /api/v1/info, *",
+		"p, *, /api/v1/captcha, Get",
+		"p, user, /api/v1/resource, GET",
+	}
+	for _, s := range lp {
+		st := strings.Split(s, ", ")
+		v0 := st[1]
+		v1 := st[2]
+		v2 := st[3]
+
+		_, _ = e.AddPolicy(v0, v1, v2)
+	}
+	lg := []string{
+		"g, alice, admin",
+		"g, bob, user",
+	}
+	for _, t := range lg {
+		st := strings.Split(t, ", ")
+		user := st[1]
+		role := st[2]
+		_, _ = e.AddRoleForUser(user, role)
+		//e.AddRoleForUser(t)
+	}
 }
 
 // CheckPermission 检查权限
@@ -45,8 +77,7 @@ func (ce *CasbinEnforcer) AddPolicy(sub, obj, act string) error {
 	if !ok {
 		return err
 	}
-	ce.enforcer.SavePolicy() // 保存到数据库
-	return nil
+	return ce.enforcer.SavePolicy() // 保存到数据库
 }
 
 // RemovePolicy 删除权限策略
@@ -55,8 +86,7 @@ func (ce *CasbinEnforcer) RemovePolicy(sub, obj, act string) error {
 	if !ok {
 		return err
 	}
-	ce.enforcer.SavePolicy() // 保存更改
-	return nil
+	return ce.enforcer.SavePolicy() // 保存更改
 }
 
 // AddRoleForUser 添加角色
@@ -65,8 +95,7 @@ func (ce *CasbinEnforcer) AddRoleForUser(user, role string) error {
 	if !ok {
 		return err
 	}
-	ce.enforcer.SavePolicy()
-	return nil
+	return ce.enforcer.SavePolicy()
 }
 
 // DeleteRoleForUser 删除用户的角色
@@ -75,8 +104,7 @@ func (ce *CasbinEnforcer) DeleteRoleForUser(user, role string) error {
 	if !ok {
 		return err
 	}
-	ce.enforcer.SavePolicy()
-	return nil
+	return ce.enforcer.SavePolicy()
 }
 
 // GetRolesForUser 获取用户的角色
@@ -102,8 +130,7 @@ func (ce *CasbinEnforcer) DeleteRole(role string) error {
 	if !ok {
 		return err
 	}
-	ce.enforcer.SavePolicy()
-	return nil
+	return ce.enforcer.SavePolicy()
 }
 
 // GetAllPolicies 获取所有的策略
