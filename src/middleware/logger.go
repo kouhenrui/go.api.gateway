@@ -40,6 +40,14 @@ func LoggerMiddleware() gin.HandlerFunc {
 				"duration": duration,
 				"clientIP": c.ClientIP(),
 			}).Warn("Resource not found")
+		case 400:
+			config.Logger.WithFields(logrus.Fields{
+				"status":   statusCode,
+				"method":   c.Request.Method,
+				"path":     c.Request.URL.Path,
+				"duration": duration,
+				"clientIP": c.ClientIP(),
+			}).Warn("Params validate error")
 		case 405:
 			config.Logger.WithFields(logrus.Fields{
 				"status":   statusCode,
